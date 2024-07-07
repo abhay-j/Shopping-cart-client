@@ -32,7 +32,7 @@ import {  useNavigate } from "react-router-dom";
         console.log("form submitted");
         console.log(formData)
         try{
-            const response = await axios.post("http://localhost:8080/api/auth/login",formData);
+            const response = await axios.post("https://shopping-cart-rest-4cb8bc3adabc.herokuapp.com/api/auth/login",formData);
             console.log('Login response:', response.data);
             const { accessToken, tokenType, id, username, email } = response.data;
             // Set the user state
@@ -43,7 +43,7 @@ import {  useNavigate } from "react-router-dom";
 
 
            try {
-            const cartResponse = await axios.post(`http://localhost:8080/api/carts/${id}`, null, {
+            const cartResponse = await axios.post(`https://shopping-cart-rest-4cb8bc3adabc.herokuapp.com/api/carts/${id}`, null, {
               headers: {
                 Authorization: `${tokenType} ${accessToken}`
               }

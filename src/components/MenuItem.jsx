@@ -23,7 +23,7 @@ export function MenuItem({data, user, shoppingCartResponse}){
         
         try {
             //http://localhost:8080/api/carts/1/items
-            const response = await axios.post(`http://localhost:8080/api/carts/${shoppingCartResponse.cartId}/items`, {
+            const response = await axios.post(`https://shopping-cart-rest-4cb8bc3adabc.herokuapp.com/api/carts/${shoppingCartResponse.cartId}/items`, {
               product: {
                 id: data.id,
               },

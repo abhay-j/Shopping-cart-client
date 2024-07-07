@@ -95,7 +95,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 export function Signup() {
     
     
@@ -106,6 +106,7 @@ export function Signup() {
       });
       const [error, setError] = useState("");
       const [success, setSuccess] = useState("");
+      const navigate = useNavigate(); 
       
       
       const handleSubmit = async (e) => {
@@ -115,9 +116,17 @@ export function Signup() {
         console.log("form submitted");
         console.log(formData)
         try{
-            const response = await axios.post("http://localhost:8080/api/auth/register",formData);
-            setSuccess("Registration successful!");
+            const response = await axios.post("https://shopping-cart-rest-4cb8bc3adabc.herokuapp.com/api/auth/register",formData);
+           
             console.log(response.data);
+            setFormData({
+              username: "",
+              email: "",
+              password: "",
+            })
+            navigate("/login"); 
+            setSuccess("Registration successful!");
+
         }catch(error){
             setError(err.response?.data?.message || "An error occurred during registration.");
         }

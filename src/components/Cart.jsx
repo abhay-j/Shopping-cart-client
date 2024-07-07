@@ -11,7 +11,7 @@ export function Cart({ shoppingCartResponse, user }) {
     const fetchCartItems = async () => {
       if (shoppingCartResponse && shoppingCartResponse.success) {
         try {
-          const response = await axios.get(`http://localhost:8080/api/carts/${shoppingCartResponse.cartId}/items`, {
+          const response = await axios.get(`https://shopping-cart-rest-4cb8bc3adabc.herokuapp.com/api/carts/${shoppingCartResponse.cartId}/items`, {
             headers: {
               Authorization: `Bearer ${user.accessToken}`
             }
@@ -42,7 +42,7 @@ export function Cart({ shoppingCartResponse, user }) {
   const handleDeleteItem = async (itemId) => {
     try {
         // /api/carts/{cartId}/items/{itemId}
-      await axios.delete(`http://localhost:8080/api/carts/${shoppingCartResponse.cartId}/items/${itemId}`, {
+      await axios.delete(`https://shopping-cart-rest-4cb8bc3adabc.herokuapp.com/api/carts/${shoppingCartResponse.cartId}/items/${itemId}`, {
         headers: {
           Authorization: `Bearer ${user.accessToken}`
         }

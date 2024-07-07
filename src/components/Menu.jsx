@@ -7,7 +7,7 @@ const [data, setData] = useState([]);
 
 async function fetchData() {
     try {
-        const response = await fetch(`http://localhost:8080/api/products`);
+        const response = await fetch(`https://shopping-cart-rest-4cb8bc3adabc.herokuapp.com/api/products`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
