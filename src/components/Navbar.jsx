@@ -262,7 +262,7 @@ export function CustomNavBar({user, onLogout}) {
         <MobileNav open={openNav}>
           {navList}
           <div className="flex items-center gap-x-1">
-               <Button fullWidth variant="text" size="sm" onClick={() => navigate("/login")}>
+               {/* <Button fullWidth variant="text" size="sm" onClick={() => navigate("/login")}>
               <span>Log In</span>
             </Button>
             <Button fullWidth variant="gradient" size="sm" onClick={() => navigate("/signup")}>
@@ -270,7 +270,17 @@ export function CustomNavBar({user, onLogout}) {
             </Button> 
             <Button fullWidth variant="gradient" size="sm" onClick={onLogout}>
               <span>Logout</span>
-            </Button> 
+            </Button>  */}
+              {
+                user? <Button fullWidth variant="gradient" size="sm" onClick={onLogout}>
+                <span>Logout</span>
+              </Button> : <> <Button fullWidth variant="text" size="sm" onClick={() => navigate("/login")}>
+              <span>Log In</span>
+            </Button>
+            <Button fullWidth variant="gradient" size="sm" onClick={() => navigate("/signup")}>
+              <span>Sign up</span>
+            </Button></>
+              }
           
             
           </div>
