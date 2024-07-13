@@ -22,6 +22,8 @@ export function MenuItem({data, user, shoppingCartResponse}){
        
         
         try {
+          // https://shopping-cart-rest-4cb8bc3adabc.herokuapp.com/api/carts/${shoppingCartResponse.cartId}/items
+          
             //http://localhost:8080/api/carts/1/items
             const response = await axios.post(`https://shopping-cart-rest-4cb8bc3adabc.herokuapp.com/api/carts/${shoppingCartResponse.cartId}/items`, {
               product: {
@@ -39,15 +41,15 @@ export function MenuItem({data, user, shoppingCartResponse}){
             console.error('Error adding item to cart:', error);
           }
     }
-
+    //
     
     return(<div>
-      <Card className="w-96">
-      <CardHeader shadow={false} floated={false} className="h-96">
+      <Card className=" w-full max-w-[320px]  rounded-none">
+      <CardHeader shadow={false} floated={false} className="h-64 sm:h-80">
         <img
           src={url}
           alt="card-image"
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover "
         />
       </CardHeader>
       <CardBody>

@@ -1,11 +1,21 @@
+
 import React, { useState, useEffect } from 'react';
+import {  useNavigate } from "react-router-dom";
 import axios from 'axios';
-import { Card, CardBody, Typography, Avatar, IconButton } from "@material-tailwind/react";
+import {
+  Card,
+  CardBody,
+  Typography,
+  Button,
+  Input,
+} from "@material-tailwind/react";
 
 export function Cart({ shoppingCartResponse, user }) {
   const [cartItems, setCartItems] = useState([]);
   const [error, setError] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [couponCode, setCouponCode] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -25,23 +35,15 @@ export function Cart({ shoppingCartResponse, user }) {
     };
 
     fetchCartItems();
-  }, [shoppingCartResponse]);
+  }, [shoppingCartResponse, user.accessToken]);
 
   useEffect(() => {
-    const total = cartItems.reduce((sum, item) => sum + (item.product.price ), 0);
+    const total = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
     setTotalPrice(total);
   }, [cartItems]);
 
-
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
-
-
   const handleDeleteItem = async (itemId) => {
     try {
-        // /api/carts/{cartId}/items/{itemId}
       await axios.delete(`https://shopping-cart-rest-4cb8bc3adabc.herokuapp.com/api/carts/${shoppingCartResponse.cartId}/items/${itemId}`, {
         headers: {
           Authorization: `Bearer ${user.accessToken}`
@@ -54,74 +56,141 @@ export function Cart({ shoppingCartResponse, user }) {
     }
   };
 
+  const handleQuantityChange = (itemId, newQuantity) => {
+    // Implement the API call to update quantity
+    setCartItems(cartItems.map(item => 
+      item.id === itemId ? { ...item, quantity: newQuantity } : item
+    ));
+  };
+
+  const handleCheckout = () => {
+    // Implement coupon logic here
+    console.log('checkout:');
+    navigate("/checkout")
+  };
+
+  const continueShopping = () => {
+    // Implement coupon logic here
+   
+    navigate("/")
+  };
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md px-4">
-        <Card className="w-96">
-          <CardBody>
-            <div className="mb-4 flex items-center justify-between">
-              <Typography variant="h5" color="blue-gray" className="">
-                Cart Items
-              </Typography>
-            </div>
-            <div className="divide-y divide-gray-200">
-              {cartItems.map(({ id, product }) => (
-                <div
-                  key={id}
-                  className="flex items-center justify-between pb-3 pt-3 last:pb-0"
-                >
-                  <div className="flex items-center gap-x-3">
-                    <Avatar size="sm" src={product.url} alt={product.title} />
-                    <div>
-                      <Typography color="blue-gray" variant="h6">
+    <div className="container mx-auto px-4 py-8">
+      <Card>
+        <CardBody>
+          <Typography variant="h5" color="blue-gray" className="mb-4">
+            Cart Items
+          </Typography>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-max table-auto text-left">
+              <thead>
+                <tr>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Image</th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Name</th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Price</th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Quantity</th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cartItems.map(({ id, product, quantity }) => (
+                  <tr key={id}>
+                    <td className="p-4">
+                      <img src={product.url} alt={product.title} className="h-16 w-16 object-cover rounded" />
+                    </td>
+                    <td className="p-4">
+                      <Typography variant="small" color="blue-gray" className="font-normal">
                         {product.title}
                       </Typography>
-                      {/* <Typography variant="small" color="gray">
-                        Quantity: {quantity}
-                      </Typography> */}
-                    </div>
-                  </div>
-                  <Typography color="blue-gray" variant="h6">
-                    ${(product.price ).toFixed(2)}
-                  </Typography>
-                  <IconButton
-                      variant="text"
-                      color="red"
-                      size="sm"
-                      onClick={() => handleDeleteItem(id)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-5 h-5"
+                    </td>
+                    <td className="p-4">
+                      <Typography variant="small" color="blue-gray" className="font-normal">
+                        ${product.price.toFixed(2)}
+                      </Typography>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          size="sm" 
+                          color="blue-gray" 
+                          variant="outlined"
+                          onClick={() => handleQuantityChange(id, Math.max(1, quantity - 1))}
+                        >
+                          -
+                        </Button>
+                        <Typography variant="small" color="blue-gray" className="font-normal">
+                          {quantity}
+                        </Typography>
+                        <Button 
+                          size="sm" 
+                          color="blue-gray" 
+                          variant="outlined"
+                          onClick={() => handleQuantityChange(id, quantity + 1)}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <Button
+                        color="red"
+                        size="sm"
+                        onClick={() => handleDeleteItem(id)}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                        />
-                      </svg>
-                    </IconButton>
-                </div>
-              ))}
-            </div>
-            {cartItems.length === 0 ? (
-              <Typography className="text-center mt-4" color="gray">
-                Your cart is empty.
+                        X
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="mt-8 flex flex-col md:flex-row justify-between items-start md:items-center">
+            {/* <div className="w-full md:w-1/2 mb-4 md:mb-0">
+              <Typography variant="h6" color="blue-gray" className="mb-2">
+                Discount Coupon Codes
               </Typography>
-            ) : (
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <Typography color="blue-gray" variant="h6" className="font-bold">
-                  Total: ${totalPrice.toFixed(2)}
-                </Typography>
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  placeholder="Enter coupon code"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                />
+                <Button color="blue" onClick={handleApplyCoupon}>
+                  Apply Coupon
+                </Button>
               </div>
-            )}
-          </CardBody>
-        </Card>
-      </div>
+            </div> */}
+            <div className="w-full md:w-1/2">
+              <Typography variant="h6" color="blue-gray" className="mb-2">
+                Cart Totals
+              </Typography>
+              <div className="flex justify-between mb-2">
+                <Typography variant="small">Subtotal:</Typography>
+                <Typography variant="small" className="font-semibold">${totalPrice.toFixed(2)}</Typography>
+              </div>
+              <div className="flex justify-between mb-2">
+                <Typography variant="small">Shipping:</Typography>
+                <Typography variant="small" className="font-semibold">$5.00</Typography>
+              </div>
+              <div className="flex justify-between">
+                <Typography variant="h6">Total:</Typography>
+                <Typography variant="h6" className="font-semibold">${(totalPrice + 5).toFixed(2)}</Typography>
+              </div>
+            </div>
+          </div>
+          <div className="mt-6 flex justify-between">
+            <Button className="bg-red-900" onClick={continueShopping}>Continue Shopping</Button>
+            <Button className="bg-red-900" onClick={handleCheckout}>Checkout</Button>
+          </div>
+        </CardBody>
+      </Card>
     </div>
   );
 }
