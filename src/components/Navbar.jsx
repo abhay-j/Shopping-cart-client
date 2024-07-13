@@ -1,5 +1,6 @@
 
 import React,{useState, useEffect} from "react";
+import logo from '../assets/omglogotransparent-100x100.png'
 import { Link, useNavigate } from "react-router-dom";
 import {
   Navbar,
@@ -77,7 +78,7 @@ export function CustomNavBar({user, onLogout}) {
     <Navbar className="sticky top-0 z-10 mx-auto max-w-none rounded-none px-4 py-2 lg:px-8 lg:py-4">
       <div className=" container flex items-center justify-between text-blue-gray-900">
         <Link to="/" className="mr-4 cursor-pointer py-1.5 font-medium">
-          <img src="/api/placeholder/100/50" alt="OMG Hot Chicken Logo" className="h-12 w-auto" />
+          <img src={logo} alt="OMG Hot Chicken Logo" className="h-12 w-auto" />
         </Link>
         <div className="flex items-center gap-4">
           <div className="mr-4 hidden lg:flex items-center gap-x-5">{navList}
