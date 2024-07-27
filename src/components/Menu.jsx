@@ -1,10 +1,12 @@
 
+
 import React, { useState, useEffect } from "react";
 import { MenuItem } from "./MenuItem";
 
-export function Menu({ user, shoppingCartResponse }) {
+export function Menu({ user, shoppingCartResponse, addToGuestCart , updateCartItems}) {
   const [data, setData] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
+  const [error, setError] = useState(null);
 
   async function fetchData() {
     try {
@@ -16,6 +18,7 @@ export function Menu({ user, shoppingCartResponse }) {
       setData(menuData);
     } catch (error) {
       console.error("Failed to fetch products:", error);
+      setError("Failed to load menu items. Please try again later.");
     }
   }
 
@@ -36,10 +39,14 @@ export function Menu({ user, shoppingCartResponse }) {
   };
 
   const getFilteredData = (category) => {
-    return data.filter(item => 
+    return data.filter(item =>
       category === "all" || item.category.name === category
     );
   };
+
+  if (error) {
+    return <div className="text-center text-red-500 mt-8">{error}</div>;
+  }
 
   return (
     <div className="menu">
@@ -64,17 +71,24 @@ export function Menu({ user, shoppingCartResponse }) {
           </button>
         ))}
       </div>
-     
+    
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
         {getFilteredData(activeTab).map(item => (
           <MenuItem
             shoppingCartResponse={shoppingCartResponse}
+            addToGuestCart={addToGuestCart}
             user={user}
             key={item.id}
             data={item}
+            updateCartItems={updateCartItems}
           />
         ))}
       </div>
+      {!user && (
+        <div className="text-center mt-8 text-gray-600">
+          You are browsing as a guest. Items added to cart will be saved locally.
+        </div>
+      )}
     </div>
   );
 }

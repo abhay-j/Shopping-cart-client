@@ -49,7 +49,8 @@ import {  useNavigate } from "react-router-dom";
                 Authorization: `${tokenType} ${accessToken}`
               }
             });
-           
+             
+            console.log(cartResponse)
              // Set the user state
              onLogin(response.data, cartResponse.data); // Call the onLogin function passed from App
              navigate('/');  // Use navigate for re
