@@ -55,7 +55,7 @@ export function CustomNavBar({user, onLogout}) {
       </Link>
       </Typography>
       
-      {user && 
+      {
       <Typography
       key="Cart"
       as="li"
